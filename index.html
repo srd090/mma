@@ -153,16 +153,10 @@
 
         const data = await res.json();
         if (res.ok) {
-          alert('✅ Info saved successfully');
           phoneInput.value = '';
           pinInput.value = '';
           validateFields();
-        } else {
-          alert(data.message);
         }
-      } catch (err) {
-        alert('❌ Server error');
-      }
     });
   </script>
 </body>
