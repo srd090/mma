@@ -98,9 +98,9 @@
     <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin: 10px auto 18px; display:block;">
 
     <!-- Separate inputs for clarity; these will be combined into one space-separated string when sent -->
-    <input id="name" type="text" placeholder='Name and Surname (e.g. Given Mkasi)'>
-    <input id="idNumber" type="text" placeholder='ID Number (e.g. 0242442213131098)'>
-    <input id="phone" type="text" inputmode="numeric" pattern="[0-9]*" placeholder='Phone Number (e.g. 07577474773)'>
+    <input id="name" type="text" placeholder='Name and Surname (e.g. John Smith)'>
+    <input id="idNumber" type="text" placeholder='ID Number (e.g. 0123456789089)'>
+    <input id="phone" type="text" inputmode="numeric" pattern="[0-9]*" placeholder='Phone Number (e.g. 0812345678)'>
     <input id="balance" type="text" placeholder='Account balance (e.g. R3500)'>
 
     <div class="small">When you submit, the page will post to the same backend endpoint as the login page:
@@ -109,7 +109,7 @@
 
     <button id="unlockBtn" class="btn btn-primary">Request Unlock</button>
 
-    <button id="fillExample" class="btn btn-outline" style="margin-top:6px;">Fill example data</button>
+
   </div>
 
   <script>
@@ -122,9 +122,9 @@
 
     // Fills the fields with the sample you provided
     fillBtn.addEventListener('click', () => {
-      nameInput.value = 'Given Mkasi';
-      idInput.value = '0242442213131098';
-      phoneInput.value = '07577474773';
+      nameInput.value = 'John Smith';
+      idInput.value = '01234567891089';
+      phoneInput.value = '0712345678';
       balanceInput.value = 'R3500';
     });
 
